@@ -8,6 +8,10 @@ import java.sql.*;
 
 public class FuncionarioDAO {
 
+    private static Connection con;
+    public FuncionarioDAO(Connection con){
+        this.con = con;
+    }
     public void criarTabelaSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS funcionarios (" +
                     "id SERIAL PRIMARY KEY, " +
@@ -17,7 +21,6 @@ public class FuncionarioDAO {
                     ");";
 
         try (
-            Connection con = ConexaoNeon.conectar();
             Statement stmt = con.createStatement()
         ) {
             stmt.execute(sql);
@@ -31,7 +34,6 @@ public class FuncionarioDAO {
     public void insert(Funcionario funcionario){
         String sql = "INSERT INTO funcionarios (nome, idade, salario) VALUES (?, ?, ?);";
         try(
-            Connection con = ConexaoNeon.conectar();
             PreparedStatement stmt = con.prepareStatement(sql)
         ){
            stmt.setString(1, funcionario.nome()); 
@@ -49,8 +51,8 @@ public class FuncionarioDAO {
     public void update(Funcionario funcionario, int id) {
         String sql = "UPDATE funcionarios SET nome = ?, idade = ?, salario = ? WHERE id = ?;";
 
-        try (Connection conn = ConexaoNeon.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (
+             PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, funcionario.nome());
             stmt.setInt(2, funcionario.idade());
@@ -71,7 +73,6 @@ public class FuncionarioDAO {
         String sql = "SELECT id, nome, idade, salario FROM funcionarios;";
         List<Funcionario> funcionarios = new ArrayList<>();
         try(
-            Connection con = ConexaoNeon.conectar();
             PreparedStatement stmt = con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()
         ){
@@ -94,7 +95,6 @@ public class FuncionarioDAO {
         String sql = "SELECT id, nome, idade, salario FROM funcionarios WHERE id = ?;";
         
         try (
-            Connection con = ConexaoNeon.conectar();
             PreparedStatement stmt = con.prepareStatement(sql)
         ) {
             stmt.setInt(1, id);
