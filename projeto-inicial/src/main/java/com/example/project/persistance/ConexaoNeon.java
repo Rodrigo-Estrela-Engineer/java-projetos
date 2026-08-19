@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import io.github.cdimascio.dotenv.Dotenv;
 
-class ConexaoNeon{
+public class ConexaoNeon{
     private static final String  HOST;
     private static final String NAME;
     private static final String USER;
